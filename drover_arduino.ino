@@ -55,7 +55,7 @@ void startMotors(int speed)
     digitalWrite(12, HIGH);   //Sets direction of CH A
 
     digitalWrite(8, LOW); //ENABLE CH B
-    digitalWrite(13, HIGH); //Sets direction of CH B
+    digitalWrite(13, LOW); //Sets direction of CH B
 
     analogWrite(3, speed);   //Moves CH A
     analogWrite(11, speed);   //Moves CH B
@@ -79,10 +79,8 @@ void setup()
     pinMode(8, OUTPUT);  //Initiates Brake Channel B pin
 
     Timer1.initialize(1000000); // set timer for 1sec
-//    attachInterrupt(digitalPinToInterrupt(MOTOR1), ISR_count1,
-//                    RISING);  // Increase counter 1 when speed sensor pin goes High
-//    attachInterrupt(digitalPinToInterrupt(MOTOR2), ISR_count2,
-//                    RISING);  // Increase counter 2 when speed sensor pin goes High
+    attachInterrupt(0, ISR_count1, RISING);  // Increase counter 1 when speed sensor pin goes High
+    attachInterrupt(1, ISR_count2, RISING);  // Increase counter 2 when speed sensor pin goes High
     Timer1.attachInterrupt(ISR_timerone); // Enable the timer
 }
 
@@ -97,7 +95,7 @@ void loop()
         {
             Serial.println("d was pressed");
             //forward @ full speed
-            startMotors(255);
+            startMotors(50);
         }
         else if (command == 's')
         {
