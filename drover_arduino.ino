@@ -11,10 +11,11 @@
 //Current Sensing	Analog 0	Analog 1
 
 #define DIRECTION_CHANNEL_A 12
-#define DIRECTION_CHANNEL_B 13
-#define SPEED_CHANNEL_A 3
-#define SPEED_CHANNEL_B 11
+#define SPEED_CHANNEL_A 6
 #define BRAKE_CHANNEL_A 9
+
+#define DIRECTION_CHANNEL_B 13
+#define SPEED_CHANNEL_B 11
 #define BRAKE_CHANNEL_B 8
 
 #define left_encoder_pin 2
@@ -113,7 +114,7 @@ void setup()
 
 void loop()
 {
-    if (millis() - start >= 10)
+    if (millis() - start >= 1000)
     {
         start = millis();
         Serial.println("left");

@@ -29,8 +29,8 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 # set(_RECURSE true)
 
 #### Additional settings for programmer. From programmers.txt
-set(${PROJECT_NAME}_PROGRAMMER avrisp)
-set(${PROJECT_NAME}_PORT /dev/ttyACM1)
+set(${PROJECT_NAME}_PROGRAMMER atmel_ice)
+set(${PROJECT_NAME}_PORT /dev/ttyACM0)
 # set(uno.upload.speed 9600)
 
 ## Verbose build process
