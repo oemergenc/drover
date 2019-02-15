@@ -3,8 +3,8 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/cmake/ArduinoToolchain.cmake)
 set(CMAKE_CXX_STANDARD 98)
 set(PROJECT_NAME drover)
 
-set(${PROJECT_NAME}_BOARD uno)
-# set(ARDUINO_CPU)
+set(${PROJECT_NAME}_BOARD mega)
+set(ARDUINO_CPU atmega2560)
 project(${PROJECT_NAME})
 
 # Define additional source and header files or default arduino sketch files
@@ -30,8 +30,8 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 #### Additional settings for programmer. From programmers.txt
 set(${PROJECT_NAME}_PROGRAMMER atmel_ice)
-set(${PROJECT_NAME}_PORT /dev/ttyACM0)
-# set(uno.upload.speed 9600)
+set(${PROJECT_NAME}_PORT /dev/ttyACM1)
+# set(mega.upload.speed 9600)
 
 ## Verbose build process
 # set(${PROJECT_NAME}_AFLAGS -v)

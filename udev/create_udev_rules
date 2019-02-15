@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo ""
+echo "This script copies a udev rule to /etc to facilitate bringing"
+echo "up the drover usb connection."
+echo ""
+
+sudo cp ./99-drover-cdc.rules /etc/udev/rules.d/
+
+echo ""
+echo "Reload rules"
+echo ""
+sudo udevadm control --reload-rules
+sudo udevadm trigger
