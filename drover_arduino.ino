@@ -1,17 +1,25 @@
 #include <Arduino.h>
 #include <TimerOne.h>
+//#include <TimerThree.h>
 #include <Arduino.h>
-#include <AFMotor.h>
+//#include <AFMotor.h>
+#include <MSMotorShield.h>
 
 
 #define LOOP_TIME 1000000
 #define left_encoder_pin 20
 #define right_encoder_pin 21
 
-AF_DCMotor motor1(1);
-AF_DCMotor motor2(2);
-AF_DCMotor motor3(3);
-AF_DCMotor motor4(4);
+//AF_DCMotor motor1(1);
+//AF_DCMotor motor2(2);
+//AF_DCMotor motor3(3);
+//AF_DCMotor motor4(4);
+
+
+MS_DCMotor motor1(1);
+MS_DCMotor motor2(2);
+MS_DCMotor motor3(3);
+MS_DCMotor motor4(4);
 
 const float stepcount = 10.00;  // 10 Slots in disk, change if different
 volatile int counter_left = 0;
@@ -53,17 +61,18 @@ void setSpeed(int speed)
 
 void setup()
 {
+//    TCCR5B = (TCCR5B & 0xF8) | 0x05 ;
     Serial.begin(9600);
     //Setup for encoders
     pinMode(right_encoder_pin, INPUT_PULLUP);
     pinMode(left_encoder_pin, INPUT_PULLUP);
 
-//    Timer1.initialize(LOOP_TIME);
+    Timer1.initialize(LOOP_TIME);
     attachInterrupt(digitalPinToInterrupt(left_encoder_pin), docount_left,
                     CHANGE);  // increase counter when speed sensor pin goes High
     attachInterrupt(digitalPinToInterrupt(right_encoder_pin), docount_right,
                     CHANGE);  // increase counter when speed sensor pin goes High
-//    Timer1.attachInterrupt(timerIsr); // enable the timer
+    Timer1.attachInterrupt(timerIsr); // enable the timer
 }
 
 void loop()
@@ -75,8 +84,8 @@ void loop()
     if (millis() - start >= 1000)
     {
 
-        rpmLeft = (counter_left / stepcount) * 60;  // calculate RPM for Motor 1
-        rpmRight = (counter_right / stepcount) * 60;  // calculate RPM for Motor 2
+//        rpmLeft = (counter_left / stepcount) * 60;  // calculate RPM for Motor 1
+//        rpmRight = (counter_right / stepcount) * 60;  // calculate RPM for Motor 2
 //        Serial.println("left");
 //        Serial.println("right");
         Serial.print("Motor Speed 1: ");
@@ -91,8 +100,8 @@ void loop()
         Serial.print(" RPM, ");
         Serial.print(speed);
         Serial.println(" Speed");
-        counter_right = 0;
-        counter_left = 0;
+//        counter_right = 0;
+//        counter_left = 0;
         start = millis();
     }
     if (Serial.available())

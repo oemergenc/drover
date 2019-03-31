@@ -1,1 +1,2 @@
-KERNEL=="ttyACM*", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", MODE:="0777", SYMLINK+="arduinouno"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", GROUP="dialout", MODE:="0777", SYMLINK+="arduinouno"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", GROUP="dialout", MODE:="0777", SYMLINK+="arduinomega"
