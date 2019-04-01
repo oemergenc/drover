@@ -58,7 +58,7 @@ void setup()
 
 void loop()
 {
-    if (millis() - start >= 500)
+    if (millis() - start >= 1000)
     {
 
         rpmLeft = (counter_left / stepcount) * 60;  // calculate RPM for Motor 1
