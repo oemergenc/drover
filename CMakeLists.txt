@@ -1,39 +1,66 @@
-cmake_minimum_required(VERSION 2.8.4)
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/cmake/ArduinoToolchain.cmake)
-set(CMAKE_CXX_STANDARD 98)
-set(PROJECT_NAME drover)
+cmake_minimum_required(VERSION 3.2)
+project(drover-arduino)
 
-set(${PROJECT_NAME}_BOARD mega)
-set(ARDUINO_CPU atmega2560)
-project(${PROJECT_NAME})
+include(CMakeListsPrivate.txt)
 
-# Define additional source and header files or default arduino sketch files
-# set(${PROJECT_NAME}_SRCS)
-set(${PROJECT_NAME}_HDRS User_Setup.h)
+add_custom_target(
+    PLATFORMIO_BUILD ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-### Additional static libraries to include in the target.
-# set(${PROJECT_NAME}_LIBS)
+add_custom_target(
+    PLATFORMIO_BUILD_VERBOSE ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --verbose
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-### Main sketch file
-set(${PROJECT_NAME}_SKETCH drover_arduino.ino)
+add_custom_target(
+    PLATFORMIO_UPLOAD ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target upload
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-### Add project directories into the build
-# add_subdirectory()
+add_custom_target(
+    PLATFORMIO_CLEAN ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target clean
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-### Additional settings to add non-standard or your own Arduino libraries.
-# For this example (libs will contain additional arduino libraries)
-# An Arduino library my_lib will contain files in libs/my_lib/: my_lib.h, my_lib.cpp + any other cpp files
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
+add_custom_target(
+    PLATFORMIO_MONITOR ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion device monitor
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-# For nested library sources replace ${LIB_NAME} with library name for each library
-# set(_RECURSE true)
+add_custom_target(
+    PLATFORMIO_TEST ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-#### Additional settings for programmer. From programmers.txt
-set(${PROJECT_NAME}_PROGRAMMER atmel_ice)
-set(${PROJECT_NAME}_PORT /dev/ttyACM1)
-# set(mega.upload.speed 9600)
+add_custom_target(
+    PLATFORMIO_PROGRAM ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target program
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-## Verbose build process
-# set(${PROJECT_NAME}_AFLAGS -v)
+add_custom_target(
+    PLATFORMIO_UPLOADFS ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target uploadfs
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
-generate_arduino_firmware(${PROJECT_NAME})
+add_custom_target(
+    PLATFORMIO_UPDATE_ALL ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion update
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+    PLATFORMIO_REBUILD_PROJECT_INDEX ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion init --ide clion
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_executable(${PROJECT_NAME} ${SRC_LIST})
