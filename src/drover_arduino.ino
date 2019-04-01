@@ -1,25 +1,8 @@
 #include <Arduino.h>
-#include <TimerOne.h>
-//#include <TimerThree.h>
-#include <Arduino.h>
-//#include <AFMotor.h>
-#include <MSMotorShield.h>
+#include "../../../../../.platformio/packages/framework-arduinoavr/cores/arduino/HardwareSerial.h"
 
-
-#define LOOP_TIME 1000000
 #define left_encoder_pin 20
 #define right_encoder_pin 21
-
-//AF_DCMotor motor1(1);
-//AF_DCMotor motor2(2);
-//AF_DCMotor motor3(3);
-//AF_DCMotor motor4(4);
-//#define __AVR_ATmega2560__ 1
-
-MS_DCMotor motor1(1);
-MS_DCMotor motor2(2);
-//MS_DCMotor motor3(3);
-//MS_DCMotor motor4(4);
 
 const float stepcount = 10.00;  // 10 Slots in disk, change if different
 volatile int counter_left = 0;
@@ -40,51 +23,41 @@ void docount_right()  // counts from the speed sensor
 {
     counter_right++;  // increase +1 the counter value
 }
-//
-//void timerIsr()
-//{
-//    Timer1.detachInterrupt();  //stop the timer
-//    rpmLeft = (counter_left / stepcount) * 60.00;  // calculate RPM for Motor 1
-//    rpmRight = (counter_right / stepcount) * 60.00;  // calculate RPM for Motor 2
-//    counter_right = 0;
-//    counter_left = 0;
-//    Timer1.attachInterrupt(timerIsr);  //enable the timer
-//}
 
 void setSpeed(int speed)
 {
-    motor1.run(BACKWARD);
-    motor1.setSpeed(speed);
-    motor2.run(BACKWARD);
-    motor2.setSpeed(speed);
-//    motor3.setSpeed(speed);
-//    motor4.setSpeed(speed);
+    //Motor A
+    digitalWrite(12, HIGH);     //Establishes forward direction of Channel A
+    digitalWrite(9, LOW);       //Disengage the Brake for Channel A
+    analogWrite(3, speed);      //Spins the motor on Channel A at full speed
+
+    //Motor B
+    digitalWrite(13, LOW);     //Establishes backward direction of Channel B
+    digitalWrite(8, LOW);       //Disengage the Brake for Channel B
+    analogWrite(11, speed);     //Spins the motor on Channel B at half speed
 }
 
 void setup()
 {
-//    TCCR5B = (TCCR5B & 0xF8) | 0x05 ;
     Serial.begin(9600);
-     // and change this function to .run(FORWARD)
-
     //Setup for encoders
     pinMode(right_encoder_pin, INPUT_PULLUP);
     pinMode(left_encoder_pin, INPUT_PULLUP);
 
-//    Timer1.initialize(LOOP_TIME);
-    attachInterrupt(digitalPinToInterrupt(left_encoder_pin), docount_left,
-                    CHANGE);  // increase counter when speed sensor pin goes High
-    attachInterrupt(digitalPinToInterrupt(right_encoder_pin), docount_right,
-                    CHANGE);  // increase counter when speed sensor pin goes High
-//    Timer1.attachInterrupt(timerIsr); // enable the timer
+    attachInterrupt(digitalPinToInterrupt(left_encoder_pin), docount_left, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(right_encoder_pin), docount_right, CHANGE);
+
+    //Setup Channel A
+    pinMode(12, OUTPUT); //Initiates Brake Channel A pin
+    pinMode(9, OUTPUT); //Initiates Brake Channel A pin
+    //Setup Channel B
+    pinMode(13, OUTPUT); //Initiates Motor Channel A pin
+    pinMode(8, OUTPUT);  //Initiates Brake Channel A pin
+
 }
 
 void loop()
 {
-//    motor1.run(BACKWARD); // and change this function to .run(FORWARD)
-//    motor2.run(BACKWARD); // and change this function to .run(FORWARD)
-//    motor3.run(FORWARD); // and change this function to .run(FORWARD)
-//    motor4.run(BACKWARD); // and change this function to .run(FORWARD)
     if (millis() - start >= 500)
     {
 
@@ -120,7 +93,8 @@ void loop()
         }
         else if (command == 's')
         {
-            setSpeed(0);
+            speed = 0;
+            setSpeed(speed);
             Serial.println("s was pressed");
         }
         else if (command == 'p')
