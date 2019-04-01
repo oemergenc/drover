@@ -1,141 +1,66 @@
-#include <Arduino.h>
-#include <TimerOne.h>
-//#include <TimerThree.h>
-#include <Arduino.h>
-//#include <AFMotor.h>
-#include <MSMotorShield.h>
+/*************************************************************
+Motor Shield 2-Channel DC Motor Demo
+by Randy Sarafan
 
+For more information see:
+https://www.instructables.com/id/Arduino-Motor-Shield-Tutorial/
 
-#define LOOP_TIME 1000000
-#define left_encoder_pin 20
-#define right_encoder_pin 21
+*************************************************************/
 
-//AF_DCMotor motor1(1);
-//AF_DCMotor motor2(2);
-//AF_DCMotor motor3(3);
-//AF_DCMotor motor4(4);
+void setup() {
 
+    //Setup Channel A
+    pinMode(12, OUTPUT); //Initiates Motor Channel A pin
+    pinMode(9, OUTPUT); //Initiates Brake Channel A pin
 
-MS_DCMotor motor1(1);
-MS_DCMotor motor2(2);
-MS_DCMotor motor3(3);
-MS_DCMotor motor4(4);
+    //Setup Channel B
+    pinMode(13, OUTPUT); //Initiates Motor Channel A pin
+    pinMode(8, OUTPUT);  //Initiates Brake Channel A pin
 
-const float stepcount = 10.00;  // 10 Slots in disk, change if different
-volatile int counter_left = 0;
-volatile int counter_right = 0;
-long start = 0;
-char command;
-int speed = 0;
-
-volatile int rpmLeft = 0;
-volatile int rpmRight = 0;
-
-void docount_left()  // counts from the speed sensor
-{
-    counter_left++;  // increase +1 the counter value
 }
 
-void docount_right()  // counts from the speed sensor
-{
-    counter_right++;  // increase +1 the counter value
-}
+void loop(){
 
-void timerIsr()
-{
-    Timer1.detachInterrupt();  //stop the timer
-    rpmLeft = (counter_left / stepcount) * 60.00;  // calculate RPM for Motor 1
-    rpmRight = (counter_right / stepcount) * 60.00;  // calculate RPM for Motor 2
-    counter_right = 0;
-    counter_left = 0;
-    Timer1.attachInterrupt(timerIsr);  //enable the timer
-}
 
-void setSpeed(int speed)
-{
-    motor1.setSpeed(speed);
-    motor2.setSpeed(speed);
-    motor3.setSpeed(speed);
-    motor4.setSpeed(speed);
-}
+    //Motor A forward @ full speed
+    digitalWrite(12, HIGH); //Establishes forward direction of Channel A
+    digitalWrite(9, LOW);   //Disengage the Brake for Channel A
+    analogWrite(3, 255);   //Spins the motor on Channel A at full speed
 
-void setup()
-{
-//    TCCR5B = (TCCR5B & 0xF8) | 0x05 ;
-    Serial.begin(9600);
-    //Setup for encoders
-    pinMode(right_encoder_pin, INPUT_PULLUP);
-    pinMode(left_encoder_pin, INPUT_PULLUP);
+    //Motor B backward @ half speed
+    digitalWrite(13, LOW);  //Establishes backward direction of Channel B
+    digitalWrite(8, LOW);   //Disengage the Brake for Channel B
+    analogWrite(11, 123);    //Spins the motor on Channel B at half speed
 
-    Timer1.initialize(LOOP_TIME);
-    attachInterrupt(digitalPinToInterrupt(left_encoder_pin), docount_left,
-                    CHANGE);  // increase counter when speed sensor pin goes High
-    attachInterrupt(digitalPinToInterrupt(right_encoder_pin), docount_right,
-                    CHANGE);  // increase counter when speed sensor pin goes High
-    Timer1.attachInterrupt(timerIsr); // enable the timer
-}
 
-void loop()
-{
-    motor1.run(BACKWARD); // and change this function to .run(FORWARD)
-    motor2.run(FORWARD); // and change this function to .run(FORWARD)
-    motor3.run(FORWARD); // and change this function to .run(FORWARD)
-    motor4.run(BACKWARD); // and change this function to .run(FORWARD)
-    if (millis() - start >= 1000)
-    {
+    delay(3000);
 
-//        rpmLeft = (counter_left / stepcount) * 60;  // calculate RPM for Motor 1
-//        rpmRight = (counter_right / stepcount) * 60;  // calculate RPM for Motor 2
-//        Serial.println("left");
-//        Serial.println("right");
-        Serial.print("Motor Speed 1: ");
-        Serial.print(counter_left);
-        Serial.print(" Counts, ");
-        Serial.print(rpmLeft);
-        Serial.print(" RPM - ");
-        Serial.print("Motor Speed 2: ");
-        Serial.print(counter_right);
-        Serial.print(" Counts, ");
-        Serial.print(rpmRight);
-        Serial.print(" RPM, ");
-        Serial.print(speed);
-        Serial.println(" Speed");
-//        counter_right = 0;
-//        counter_left = 0;
-        start = millis();
-    }
-    if (Serial.available())
-    {
-        Serial.println("serial available");
-        command = Serial.read();
 
-        if (command == 'd')
-        {
-            setSpeed(100);
-            Serial.println("d was pressed");
-        }
-        else if (command == 's')
-        {
-            setSpeed(0);
-            Serial.println("s was pressed");
-        }
-        else if (command == 'p')
-        {
-            speed = speed + 10;
-            if (speed > 255)
-            {
-                speed = 255;
-            }
-            setSpeed(speed);
-        }
-        else if (command == 'm')
-        {
-            speed = speed - 10;
-            if (speed < 0)
-            {
-                speed = 0;
-            }
-            setSpeed(speed);
-        }
-    }
+    digitalWrite(9, HIGH);  //Engage the Brake for Channel A
+    digitalWrite(9, HIGH);  //Engage the Brake for Channel B
+
+
+    delay(1000);
+
+
+    //Motor A forward @ full speed
+    digitalWrite(12, LOW);  //Establishes backward direction of Channel A
+    digitalWrite(9, LOW);   //Disengage the Brake for Channel A
+    analogWrite(3, 123);    //Spins the motor on Channel A at half speed
+
+    //Motor B forward @ full speed
+    digitalWrite(13, HIGH); //Establishes forward direction of Channel B
+    digitalWrite(8, LOW);   //Disengage the Brake for Channel B
+    analogWrite(11, 255);   //Spins the motor on Channel B at full speed
+
+
+    delay(3000);
+
+
+    digitalWrite(9, HIGH);  //Engage the Brake for Channel A
+    digitalWrite(9, HIGH);  //Engage the Brake for Channel B
+
+
+    delay(1000);
+
 }
